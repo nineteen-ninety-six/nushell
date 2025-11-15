@@ -1,8 +1,8 @@
 use crate::completions::{
-    Completer, CompletionOptions, SemanticSuggestion, SuggestionKind, completion_options::NuMatcher,
+    Completer, CompletionOptions, SemanticSuggestion, completion_options::NuMatcher,
 };
 use nu_protocol::{
-    ENV_VARIABLE_ID, Span, Type, Value,
+    ENV_VARIABLE_ID, Span, SuggestionKind, Type, Value,
     ast::{self, Comparison, Expr, Expression},
     engine::{Stack, StateWorkingSet},
 };
@@ -257,7 +257,7 @@ impl Completer for OperatorCompletion<'_> {
             });
         }
 
-        let mut matcher = NuMatcher::new(prefix, options);
+        let mut matcher = NuMatcher::new(prefix, options, true);
         for OperatorItem {
             symbols,
             description,
@@ -274,6 +274,6 @@ impl Completer for OperatorCompletion<'_> {
                 kind: Some(SuggestionKind::Operator),
             });
         }
-        matcher.results()
+        matcher.suggestion_results()
     }
 }

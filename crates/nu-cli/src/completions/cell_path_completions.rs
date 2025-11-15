@@ -1,9 +1,9 @@
 use std::borrow::Cow;
 
-use crate::completions::{Completer, CompletionOptions, SemanticSuggestion, SuggestionKind};
+use crate::completions::{Completer, CompletionOptions, SemanticSuggestion};
 use nu_engine::{column::get_columns, eval_variable};
 use nu_protocol::{
-    ShellError, Span, Value,
+    ShellError, Span, SuggestionKind, Value,
     ast::{Expr, Expression, FullCellPath, PathMember},
     engine::{Stack, StateWorkingSet},
     eval_const::eval_constant,
@@ -54,7 +54,7 @@ impl Completer for CellPathCompletion<'_> {
             end: span.end - offset,
         };
 
-        let mut matcher = NuMatcher::new(prefix_str, options);
+        let mut matcher = NuMatcher::new(prefix_str, options, true);
         let path_members = self
             .full_cell_path
             .tail
@@ -72,7 +72,7 @@ impl Completer for CellPathCompletion<'_> {
         for suggestion in get_suggestions_by_value(&value, current_span) {
             matcher.add_semantic_suggestion(suggestion);
         }
-        matcher.results()
+        matcher.suggestion_results()
     }
 }
 

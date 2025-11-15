@@ -1,8 +1,8 @@
 use crate::completions::{
-    Completer, CompletionOptions, SemanticSuggestion, SuggestionKind, completion_options::NuMatcher,
+    Completer, CompletionOptions, SemanticSuggestion, completion_options::NuMatcher,
 };
 use nu_protocol::{
-    DeclId, Span,
+    DeclId, Span, SuggestionKind,
     engine::{Stack, StateWorkingSet},
 };
 use reedline::Suggestion;
@@ -22,7 +22,7 @@ impl Completer for FlagCompletion {
         offset: usize,
         options: &CompletionOptions,
     ) -> Vec<SemanticSuggestion> {
-        let mut matcher = NuMatcher::new(prefix, options);
+        let mut matcher = NuMatcher::new(prefix, options, true);
         let mut add_suggestion = |value: String, description: String| {
             matcher.add_semantic_suggestion(SemanticSuggestion {
                 suggestion: Suggestion {
@@ -53,6 +53,6 @@ impl Completer for FlagCompletion {
             }
             add_suggestion(format!("--{}", named.long), named.desc.clone());
         }
-        matcher.results()
+        matcher.suggestion_results()
     }
 }

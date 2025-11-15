@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 
-use crate::completions::{Completer, CompletionOptions, SemanticSuggestion, SuggestionKind};
+use crate::completions::{Completer, CompletionOptions, SemanticSuggestion};
 use nu_protocol::{
-    ENV_VARIABLE_ID, IN_VARIABLE_ID, NU_VARIABLE_ID, Span,
+    ENV_VARIABLE_ID, IN_VARIABLE_ID, NU_VARIABLE_ID, Span, SuggestionKind,
     engine::{Stack, StateWorkingSet},
 };
 use reedline::Suggestion;
@@ -21,7 +21,7 @@ impl Completer for VariableCompletion {
         offset: usize,
         options: &CompletionOptions,
     ) -> Vec<SemanticSuggestion> {
-        let mut matcher = NuMatcher::new(prefix, options);
+        let mut matcher = NuMatcher::new(prefix, options, true);
         let current_span = reedline::Span {
             start: span.start - offset,
             end: span.end - offset,
@@ -70,6 +70,6 @@ impl Completer for VariableCompletion {
             });
         }
 
-        matcher.results()
+        matcher.suggestion_results()
     }
 }

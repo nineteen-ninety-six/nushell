@@ -1,10 +1,7 @@
 use super::{SemanticSuggestion, completion_options::NuMatcher};
-use crate::{
-    SuggestionKind,
-    completions::{Completer, CompletionOptions},
-};
+use crate::completions::{Completer, CompletionOptions};
 use nu_protocol::{
-    Span,
+    Span, SuggestionKind,
     engine::{Stack, StateWorkingSet},
 };
 use reedline::Suggestion;
@@ -22,7 +19,7 @@ impl Completer for AttributeCompletion {
         offset: usize,
         options: &CompletionOptions,
     ) -> Vec<SemanticSuggestion> {
-        let mut matcher = NuMatcher::new(prefix, options);
+        let mut matcher = NuMatcher::new(prefix, options, true);
 
         let attr_commands =
             working_set.find_commands_by_predicate(|s| s.starts_with(b"attr "), true);
@@ -44,7 +41,7 @@ impl Completer for AttributeCompletion {
             });
         }
 
-        matcher.results()
+        matcher.suggestion_results()
     }
 }
 
@@ -58,7 +55,7 @@ impl Completer for AttributableCompletion {
         offset: usize,
         options: &CompletionOptions,
     ) -> Vec<SemanticSuggestion> {
-        let mut matcher = NuMatcher::new(prefix, options);
+        let mut matcher = NuMatcher::new(prefix, options, true);
 
         for s in ["def", "extern", "export def", "export extern"] {
             let decl_id = working_set
@@ -80,6 +77,6 @@ impl Completer for AttributableCompletion {
             });
         }
 
-        matcher.results()
+        matcher.suggestion_results()
     }
 }
